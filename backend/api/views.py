@@ -14,10 +14,55 @@ import spacy
 import nltk
 import pandas as pd
 import ssl
+from keras.models import load_model
+from transformers import TFDistilBertModel
 ssl._create_default_https_context = ssl._create_unverified_context
+from transformers import DistilBertTokenizer
 
 
 
+
+custom_objects = {'TFDistilBertModel': TFDistilBertModel}
+
+loaded_model = load_model("distilbert_model.h5", custom_objects=custom_objects)
+categories = {
+0:"Entertainment",
+1:"Business" ,
+2:"Politics" ,
+3:"Judiciary" ,
+4:"Crime"  ,
+5:"Culture" ,
+6:"Sports" ,
+7:"Science"  ,
+8:"International" ,
+9:"Technology" 
+}
+tokenizer = DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
+print("tokenizer ready")
+max_length = 512
+
+def predict_text(loaded_model, text):
+
+    inputs = tokenizer(text, return_tensors='tf', truncation=True, padding='max_length', max_length=max_length)
+    
+
+    input_ids = inputs['input_ids']
+    attention_mask = inputs['attention_mask']
+    
+
+    predictions = loaded_model.predict([input_ids, attention_mask])
+    
+    return predictions
+
+def classification(row):
+
+
+    example_text = row
+    predictions = predict_text(loaded_model, example_text)
+
+    value_to_find = predictions[0].argmax()
+    predicted_class = categories[value_to_find]
+    return predicted_class
 
 def preprocess(series):
     series = series.apply(lambda x: str(x).lower())
@@ -77,6 +122,7 @@ def PreProcessTheData():
     df2.Body = preprocess(df2.Body)
     df2 = df2.dropna()
     df3 = pd.concat([df,df2], ignore_index=True, axis=0, join='outer')
+    df3["Cat"]=df3["Body"].apply(lambda x:classification(str(x)))
     df3.shape
     file_name = "Final_Prepped_Data.xlsx"
     df3.to_excel(file_name, index=False)
@@ -276,6 +322,7 @@ def index (request):
         row["Title"]=df["Heading"][ind]
         row["Description"]=df["Body"][ind]
         row["URL"]=df["URL"][ind]
+        row["Categories"]=df["Cat"][ind]
         news.append(row)
         
     print("PreProcessing Done")
