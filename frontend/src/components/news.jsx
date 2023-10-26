@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 const news = () => {
-  const [newsData, setNewsData] = useState([]);
+  const [newsData, setNewsData] = useState(null);
   const apiUrl = "http://127.0.0.1:8000/";
   useEffect(() => {
     // Fetch data from the API
@@ -13,7 +13,7 @@ const news = () => {
 
   return (
     <>
-      {newsData?.length > 0 ? (
+      {newsData? (
         <>
           <div>
             {newsData?.map((news) => (
