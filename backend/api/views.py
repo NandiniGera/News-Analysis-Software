@@ -121,11 +121,17 @@ def PreProcessTheData():
     df2 = df2[~df2['Heading'].str.contains('horoscope', case=False)]
     df2.Body = preprocess(df2.Body)
     df2 = df2.dropna()
-    df3 = pd.concat([df,df2], ignore_index=True, axis=0, join='outer')
-    df3["Cat"]=df3["Body"].apply(lambda x:classification(str(x)))
-    df3.shape
+    df3 = pd.read_excel("ThePrint.xlsx")
+    df3 = df3[~df3['Body'].apply(lambda x: isinstance(x, (float, int)))]
+    df3 = df3[~(df3['Body'].str.contains('dear subscriber', case=False))]
+    df3 = df3[~df3['Heading'].str.contains('horoscope', case=False)]
+    df3.Body = preprocess(df3.Body)
+    df3 = df3.dropna()
+    df4 = pd.concat([df, df2, df3], ignore_index=True, axis=0, join='outer')
+    df4["Cat"]=df4["Body"].apply(lambda x:classification(str(x)))
+    df4.shape
     file_name = "Final_Prepped_Data.xlsx"
-    df3.to_excel(file_name, index=False)
+    df4.to_excel(file_name, index=False)
     
     
 
@@ -297,6 +303,90 @@ def IndiaToday():
     finally:
         print("India today finished")
         workbook.close()
+        thePrint()
+
+
+
+
+def thePrint():
+    workbook=xlsxwriter.Workbook('ThePrint.xlsx')
+    worksheet=workbook.add_worksheet()
+    row=0
+    column=0
+    worksheet.write(row,column,"Heading")
+    worksheet.write(row,column+1,"Body")
+    worksheet.write(row,column+2,"Category")
+    worksheet.write(row,column+3,"URL")
+    row+=1
+    
+    HEADERS = {'User-Agent': 'Mozilla/5.0 (iPad; CPU OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148'}
+    r=requests.get('https://theprint.in', headers=HEADERS)
+    urls_to_visit=[]
+    unique_urls={}
+    count=0
+    try:
+        if(r.status_code==200):
+            soup=BeautifulSoup(r.text, 'html.parser')
+            for url in soup.findAll('a'):
+                try:
+                    if(url.has_attr('href')):
+                        if("video" not in url['href'].split("/") and "tag" not in url['href'].split("/") and "author" not in url['href'].split("/")):
+                            if(url['href'][0]=='/' and "https://theprint.in"+url['href'] not in unique_urls.keys()):
+                                unique_urls["https://theprint.in"+url['href']]=True
+                                urls_to_visit.append("https://theprint.in"+url['href'])
+                            elif(url['href'][0]=='h' and url['href'].split("/")[2]=="theprint.in" and url['href'] not in unique_urls.keys()):
+                                unique_urls[url['href']]=True
+                                urls_to_visit.append(url['href'])
+                finally:
+                    continue
+        while(urls_to_visit and count<20):
+                urltoVisit=urls_to_visit[0]
+                urls_to_visit.pop(0)
+                if(urltoVisit[0]=='h' and (["tags","tag", "livetv?utm_source=mobiletophead&amp;utm_campaign=livetvlink", "video", "news-podcasts", "lifestyle","astrology", "web-stories"] not in urltoVisit.split("/"))):
+                    try:
+                        r=requests.get(urltoVisit, headers=HEADERS)
+                        if(r.status_code==200):
+                            soup=BeautifulSoup(r.text, 'html.parser')
+                            for url in soup.findAll('a'):
+                                try:
+                                    if(url.has_attr('href')):
+                                        if("video" not in url['href'].split("/") and "tag" not in url['href'].split("/") and "author" not in url['href'].split("/")):
+                                            if(url['href'][0]=='/' and "https://theprint.in"+url['href'] not in unique_urls.keys()):
+                                                unique_urls["https://theprint.in"+url['href']]=True
+                                                urls_to_visit.append("https://theprint.in"+url['href'])
+                                            elif(url['href'][0]=='h' and url['href'].split("/")[2]=="theprint.in" and url['href'] not in unique_urls.keys()):
+                                                unique_urls[url['href']]=True
+                                                urls_to_visit.append(url['href'])
+                                finally:
+                                    continue
+                        
+                            if(soup.find('h1') and (soup.find('html',{'lang':'en'}) or soup.find('html',{'lang':'en-US'})or soup.find('html',{'lang':'en-UK'})) ):
+                                heading_title=soup.find('h1')
+                              
+                            
+                                if(soup.find('div', {'id':'postexcerpt'}).findAll('p')):
+                                  
+                                    heading_desc=soup.find('div', {'id':'postexcerpt'}).findAll('p')
+                                    news=""
+                                    for i in range(len(heading_desc)-4):
+                                        
+                                        news+=heading_desc[i].text
+                                    worksheet.write(row,column,heading_title.text)
+                                    worksheet.write(row,column+1,news)
+                                    worksheet.write(row,column+2,urltoVisit.split("/")[3])
+                                    worksheet.write(row,column+3,urltoVisit)
+                              
+                                    row+=1
+                                    
+                                  
+                                    count+=1
+                    finally:
+                        continue        
+            
+        
+    finally:
+        print("The Print finished")
+        workbook.close()
 
 
 
@@ -305,14 +395,17 @@ def index (request):
     print("The Session started")
     # thread1 = threading.Thread(target=IndiaTv)
     # thread2 = threading.Thread(target=IndiaToday)
+    # thread3 = threading.Thread(target=thePrint)
 
     # # Start the threads
     # thread1.start()
     # thread2.start()
+    # thread3.start()
 
     # # Wait for all threads to finish
     # thread1.join()
     # thread2.join()
+    # thread3.join()
 
     PreProcessTheData()
     news=[]
