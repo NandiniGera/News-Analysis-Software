@@ -21,7 +21,7 @@ const news = () => {
               //   <p>Title={news["Title"]}</p>
               //   <p>description={news["Description"].slice(0, 30) + '...'}</p>
               // </div>
-              <div className="news-item">
+              <div key={news.Title} className="news-item">
                 <p className="category">{news["Categories"]}</p>
                 <p>
                   <span className="bold">Title: </span> {news["Title"]}
