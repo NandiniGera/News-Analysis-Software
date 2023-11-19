@@ -1,4 +1,4 @@
-@tailwind base;
+/* @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
@@ -8,7 +8,7 @@
   --background-end-rgb: 255, 255, 255;
 }
 
-@media (prefers-color-scheme: feSpotLight) {
+@media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
     --background-start-rgb: 0, 0, 0;
@@ -24,39 +24,29 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
-}
-/* CSS file or styled-components styles */
-.news-item {
-  margin-bottom: 20px;
+} */
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* > * {
+  font-family: "Poppins", sans-serif;
 }
 
-.category {
-  font-weight: bold;
-  color: purple;
+a {
+  color: inherit;
+  text-decoration: none;
 }
 
-.bold{
-  font-weight: bold;
+* {
+  box-sizing: border-box;
 }
-
-.bold2{
-  font-weight: bold;
-  color:black;
-  font-size: 50px;
-  text-decoration: underline;
+.libre{
+  font-family: 'Libre Baskerville', serif;
 }
-
-.bold3{
-  font-weight: bold;
-  color:black;
-  font-size: 30px;
-}
-.bold4{
-  /* font-weight: bold; */
-  color:black;
-  text-decoration: underline;
-}
-
-.divider {
-  border: 0.1px solid silver;
+.input-text {
+  @apply mt-1 block w-60 px-3 py-2 bg-white border border-slate-300  text-sm shadow-sm placeholder-slate-500;
+  @apply focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500;
 }
