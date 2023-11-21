@@ -4,9 +4,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { useEffect } from "react";
+import Link from "next/link";
 
 
-const header = () => {
+const Header = () => {
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
 
@@ -31,7 +32,7 @@ const header = () => {
     <>
       <header className="bg-gray-50 py-1">
         <div className="xl:container xl:mx-auto flex items-center sm:flex-row sm:justify-between text-center py-3">
-          <img src="/Emblem_of_India.svg" width={40} height={40} alt="" />
+          {/* <img src="/Emblem_of_India.svg" width={40} height={40} alt="" /> */}
           <div className="flex justify-center items-center -mr-10">
             {minutes} : {seconds}
           </div>
@@ -55,15 +56,15 @@ const header = () => {
             <div className="flex gap-6">
               <div className="flex justify-center items-center space-x-12">
                 ​​{" "}
-                <a className="hover:cursor-pointer hover:scale-[1.02] duration-300">
+                <Link href="/" className="hover:cursor-pointer hover:scale-[1.02] duration-300">
                   About
-                </a>
+                </Link>
                 ​
-                <a href="/" className="hover:cursor-pointer hover:scale-[1.02] duration-300">
+                <Link href="/" className="hover:cursor-pointer hover:scale-[1.02] duration-300">
                   Refresh
-                </a>
+                </Link>
               </div>
-              <img src="/G20.webp" width={90} height={90} alt="" />
+              {/* <img src="/G20.webp" width={90} height={90} alt="" /> */}
               {/* <a className="mt-1 hover:cursor-pointer hover:scale-[1.02] duration-300">
                 <ImFacebook color="#888888" />
               </a>
@@ -83,4 +84,4 @@ const header = () => {
   );
 };
 
-export default header;
+export default Header;

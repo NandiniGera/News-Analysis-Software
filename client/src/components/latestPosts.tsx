@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Data from "../../public/data/news.json";
 import Card from "../components/card";
 import {
   Dropdown,
@@ -19,7 +20,7 @@ import Sports from "../../public/categories/images/sports.jpg";
 import Technology from "../../public/categories/images/technology.jpg";
 import Business from "../../public/categories/images/business.jpg";
 
-const latestPosts = () => {
+const LatestPosts = () => {
   const regionalNews = regional.News;
   const [selectedKeys, setSelectedKeys] = useState(new Set(["English"]));
   const selectedValue = React.useMemo(
@@ -43,7 +44,7 @@ const latestPosts = () => {
                   <Button variant="bordered" className="capitalize">
                     <div className="flex uppercase justify-center items-center text-3xl font-bold -ml-2">
                     {selectedValue}
-                    <img src="/dropdown.png" className="ml-1" width={20} height = {20} alt="" />
+                    {/* <img src="/dropdown.png" className="ml-1" width={20} height = {20} alt="" /> */}
                     </div>
                   </Button>
                 </DropdownTrigger>
@@ -53,7 +54,7 @@ const latestPosts = () => {
                   disallowEmptySelection
                   selectionMode="single"
                   selectedKeys={selectedKeys}
-                  onSelectionChange={setSelectedKeys}
+                  // onSelectionChange={setSelectedKeys}
                 >
                   <DropdownItem className="w-[100px] text-xl outline-none  hover:outline-none hover:underline" key="English">English</DropdownItem>
                   <DropdownItem className="w-[100px] text-xl hover:outline-none hover:underline" key="Hindi">Hindi</DropdownItem>
@@ -67,7 +68,7 @@ const latestPosts = () => {
             <>
               <div className="grid grid-cols-3 gap-4">
                 {newsData?.map((news) => (
-                  <Card
+                  <Card key={news.Title}
                     imgUrl={news["Categories"]}
                     // Title={news["Title"]}
                     Title={
@@ -142,7 +143,7 @@ const latestPosts = () => {
             <>
               <div className="grid grid-cols-3 gap-4">
                 {regionalNews?.map((news) => (
-                  <Card
+                  <Card key={news.Title}
                     imgUrl={news["Categories"]}
                     // Title={news["Title"]}
                     Title={
@@ -161,7 +162,7 @@ const latestPosts = () => {
                           padding: "5px",
                         }}
                       >
-                        {newsMap[news["Categories"]]}
+                        {news["Categories"]}
                       </span>
                     }
                     description={
@@ -235,6 +236,6 @@ const latestPosts = () => {
   );
 };
 
-export default latestPosts;
+export default LatestPosts;
 
 // heading, body, catgeory, url

@@ -36,6 +36,7 @@ import React from "react";
 import { Zoom } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css";
 import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/24/solid";
+import Image from "next/image";
 
 const ImageGallery = () => {
   //Array of Images
@@ -72,7 +73,7 @@ const ImageGallery = () => {
             key={index}
             className="flex justify-center md:items-center items-start w-screen h-[70vh] relative"
           >
-            <img className="w-screen opacity-80" src={each} />
+            <Image className="w-screen opacity-80" src={each} alt= {'pip'} width= {10000} height={10000}/>
             <h1 className="absolute md:top-60 top-24 -mt-4 inset-x-1/4 text-center z-10 md:text-6xl text-6xl bold text-white font-bold uppercase">
             Welcome To News Analysis
             </h1>
