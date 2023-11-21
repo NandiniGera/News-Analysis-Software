@@ -26,10 +26,9 @@ const latestPosts = () => {
     () => Array.from(selectedKeys).join(", ").replaceAll("_", " "),
     [selectedKeys]
   );
- 
-  const newsData= Data.news;
 
 
+  const newsData=Data.News;
   return (
     <>
       {newsData?.length > 0 ? (
@@ -87,7 +86,7 @@ const latestPosts = () => {
                           padding: "5px",
                         }}
                       >
-                        {newsMap[news["Categories"]]}
+                        {[news["Categories"]]}
                       </span>
                     }
                     description={
@@ -162,7 +161,7 @@ const latestPosts = () => {
                           padding: "5px",
                         }}
                       >
-                        {[news["Categories"]]}
+                        {newsMap[news["Categories"]]}
                       </span>
                     }
                     description={
