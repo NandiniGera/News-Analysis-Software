@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Data from "../../public/data/news.json";
 import Card from "../components/card";
 import {
   Dropdown,
@@ -28,8 +27,60 @@ const LatestPosts = () => {
     [selectedKeys]
   );
 
+  const [newsData, setNewsData] = useState([]);
+  const apiUrl = "http://127.0.0.1:8000/";
+  useEffect(() => {
+    // Fetch data from the API
+    fetch(apiUrl)
+      .then((response) => response.json())
+      .then((data) => {
+        setNewsData(data["News"]);
+        for (let i = 0; i < data["News"].length; i++) {
+          const negative = parseFloat(
+            data["News"][i]["Sentiment_Score"].split(" ")[1]
+          );
+          if (negative >= 0.5) {
+            fetch("https://email-kcr3.onrender.com/sendEmail", {
+              // Adding method type
+              method: "POST",
 
-  const newsData=Data.News;
+              // Adding body or contents to send
+              body: JSON.stringify({
+                title: data["News"][i]["Title"],
+                url: data["News"][i]["URL"],
+              }),
+
+              // Adding headers to the request
+              headers: {
+                "Content-type": "application/json; charset=UTF-8",
+              },
+            })
+              // Converting to JSON
+              .then((response) => response.json())
+
+              // Displaying results to console
+              .then((json) => console.log(json));
+          }
+        }
+      })
+      .catch((error) => console.error("Error fetching data: ", error));
+  }, []); // The empty array means this effect runs once after initial render
+
+  
+  const newsMap = {
+    Sports: "Ministry of Youth Affairs and Sports",
+    Culture: "Ministry of Culture",
+    International: "Ministry of External Affairs",
+    Politics: "Ministry of Home Affairs",
+    Science: "Ministry of Science and Technology",
+    Technology: "Ministry of Electronics and Information Technology",
+    Business: "Ministry of Finance",
+    Entertainment: "Ministry of Information and Broadcasting",
+    Judiciary: "Ministry of Law and Justice",
+    Crime: "Department of Internal Security",
+  };
+
+
   return (
     <>
       {newsData?.length > 0 ? (
@@ -87,7 +138,7 @@ const LatestPosts = () => {
                           padding: "5px",
                         }}
                       >
-                        {[news["Categories"]]}
+                        {newsMap[news["Categories"]]}
                       </span>
                     }
                     description={
@@ -162,7 +213,7 @@ const LatestPosts = () => {
                           padding: "5px",
                         }}
                       >
-                        {news["Categories"]}
+                        {newsMap[news["Categories"]]}
                       </span>
                     }
                     description={
