@@ -28,8 +28,8 @@ from transformers import AutoTokenizer
 import numpy as np
 from scipy.special import softmax
 import pandas as pd
-from api import Aajtak_Video
-from api import IndianExpress_Video
+# from api import Aajtak_Video
+# from api import IndianExpress_Video
 import torch
 import urllib.request
 from urllib.request import urlopen
